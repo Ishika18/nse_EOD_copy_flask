@@ -1,0 +1,24 @@
+{%  extends "base.html" %}
+{% block title %} Home {% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  {{ datepicker.loader() }} {# to load jQuery-ui #}
+  {{ datepicker.picker(id=".dp") }}
+{% endblock %}
+
+{% block content %}
+<h1 style="text-align:center;">Stock Future Price History</h1>
+<form action="#" method="post">
+    <div class="form-group col-12">
+        <label for="validationDefault01">Symbol</label>
+        <input type="text" class="form-control" id="validationDefault01" placeholder="Symbol" required>
+    </div>
+    <div class="form-group col-12">
+        <label for="validationDefault01">Start Date</label>
+        <input type="text" class="form-control dp" id="validationDefault01" required>
+    </div>
+    <p><button type="submit">Submit</button> </p>
+</form>
+
+{% endblock %}
