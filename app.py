@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request
 from flask_datepicker import datepicker
-from datetime import date
+from datetime import date, datetime
 from nsepy import get_history
-from data import data
+import data
+import pandas as pd
 
 app = Flask(__name__)
 app = Flask(__name__)
@@ -17,14 +18,16 @@ def home():
 @app.route("/data", methods=["POST", "GET"])
 def show_data():
     if request.method == "POST":
-        download = request.form["download"]
-        stock_fut = get_history(symbol=request.form["symbol"],
-                                start_date=date(request.form["start_date"]),
-                                end_date=date(request.form["end_date"]),
-                                expiry_date=date(request.form["expiry_date"]))
-        if download == "on":
-            download_file(stock_fut)
-        return f"{download}"
+        stock_fut = get_history(symbol=request.form["symbol"].strip().upper(),
+                                start=datetime.strptime(request.form["start_date"], '%Y-%m-%d'),
+                                end=datetime.strptime(request.form["end_date"], '%Y-%m-%d'),
+                                expiry_date=datetime.strptime(request.form["expiry_date"], '%Y-%m-%d'))
+        if request.form.get('download') == 'on':
+            print("works", flush=True)
+            data.download_file(stock_fut)
+        print(request.form, flush=True)
+        pd.set_option('display.max_rows', stock_fut.shape[0] + 1)
+        return stock_fut.to_html()
 
 
 if __name__ == '__main__':
